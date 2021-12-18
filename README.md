@@ -24,7 +24,7 @@ Expand `foo[01-03,06,10-12].bar.com`, the result will be as follows:
 import "github.com/go-project-pkg/expandhost"
 
 func main() {
-    pattern := "foo[01-03,06].bar.com"
+    pattern := "foo[01-03,06,10-12].bar.com"
 
     hosts, err := expandhost.PatternToHosts(pattern)
     if err != nil {
@@ -33,6 +33,12 @@ func main() {
 
     fmt.Printf("%v\n", hosts)
 }
+```
+
+Output:
+
+```text
+[foo01.bar.com foo02.bar.com foo03.bar.com foo06.bar.com foo10.bar.com foo11.bar.com foo12.bar.com]
 ```
 
 ## License
