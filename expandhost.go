@@ -1,21 +1,19 @@
 package expandhost
 
 import (
-	"errors"
 	"fmt"
 	"regexp"
 	"strconv"
 	"strings"
 )
 
-// PatternToHosts pattern e.g.: foo[01-66,88,99-101].bar.com
+// PatternToHosts pattern e.g.:
+// foo[01-66,88,99-101].bar.com
+// foo[01-66,88,99-101].idc[1-6].bar.com
+// foo[01-66,88,99-101].[bj,sh,wh,sz].idc[1-6].bar.com
 func PatternToHosts(pattern string) ([]string, error) {
 	sep := regexp.MustCompile(`\[|\]`)
-	parts := sep.Split(pattern, -1)
-
-	if len(parts) != 3 {
-		return nil, errors.New("invalid host pattern")
-	}
+	parts := sep.Split(pattern, 3)
 
 	hostPart1 := parts[0]
 	hostPattern := parts[1]
@@ -24,7 +22,7 @@ func PatternToHosts(pattern string) ([]string, error) {
 	var numbers []string
 	for _, v := range strings.Split(hostPattern, ",") {
 		if len(strings.Split(v, "-")) == 1 {
-			numbers = append(numbers, v)
+			numbers = append(numbers, strings.TrimSpace(v))
 			continue
 		}
 
@@ -39,6 +37,20 @@ func PatternToHosts(pattern string) ([]string, error) {
 	var hosts []string
 	for _, v := range numbers {
 		hosts = append(hosts, fmt.Sprintf("%s%s%s", hostPart1, v, hostPart3))
+	}
+
+	_parts := sep.Split(hostPart3, 3)
+	if len(_parts) == 3 {
+		var newHosts []string
+		for _, v := range hosts {
+			_newHosts, err := PatternToHosts(v)
+			if err != nil {
+				return nil, err
+			}
+			newHosts = append(newHosts, _newHosts...)
+		}
+
+		return newHosts, nil
 	}
 
 	return hosts, nil
