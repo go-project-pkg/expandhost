@@ -15,6 +15,10 @@ func PatternToHosts(pattern string) ([]string, error) {
 	sep := regexp.MustCompile(`\[|\]`)
 	parts := sep.Split(pattern, 3)
 
+	if len(parts) == 1 {
+		return []string{pattern}, nil
+	}
+
 	hostPart1 := parts[0]
 	hostPattern := parts[1]
 	hostPart3 := parts[2]
