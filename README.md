@@ -4,17 +4,24 @@ Expand host pattern to host list.
 
 E.g.:
 
-Expand `foo[01-03,06,10-12].bar.com`, the result will be as follows:
+Expand `foo[01-03,06,10-12].[beiing,wuhan].bar.com`, the result will be as follows:
 
 ```go
 []string{
-    "foo01.bar.com",
-    "foo02.bar.com",
-    "foo03.bar.com",
-    "foo06.bar.com",
-    "foo010.bar.com",
-    "foo011.bar.com",
-    "foo012.bar.com",
+    "foo01.beiing.bar.com",
+    "foo01.wuhan.bar.com",
+    "foo02.beiing.bar.com",
+    "foo02.wuhan.bar.com",
+    "foo03.beiing.bar.com",
+    "foo03.wuhan.bar.com",
+    "foo06.beiing.bar.com",
+    "foo06.wuhan.bar.com",
+    "foo10.beiing.bar.com",
+    "foo10.wuhan.bar.com",
+    "foo11.beiing.bar.com",
+    "foo11.wuhan.bar.com",
+    "foo12.beiing.bar.com",
+    "foo12.wuhan.bar.com",
 }
 ```
 
@@ -24,7 +31,7 @@ Expand `foo[01-03,06,10-12].bar.com`, the result will be as follows:
 import "github.com/go-project-pkg/expandhost"
 
 func main() {
-    pattern := "foo[01-03,06,10-12].bar.com"
+    pattern := "foo[01-03,06,10-12].[beiing,wuhan].bar.com"
 
     hosts, err := expandhost.PatternToHosts(pattern)
     if err != nil {
@@ -38,7 +45,7 @@ func main() {
 Output:
 
 ```text
-[foo01.bar.com foo02.bar.com foo03.bar.com foo06.bar.com foo10.bar.com foo11.bar.com foo12.bar.com]
+[foo01.beiing.bar.com foo01.wuhan.bar.com foo02.beiing.bar.com foo02.wuhan.bar.com foo03.beiing.bar.com foo03.wuhan.bar.com foo06.beiing.bar.com foo06.wuhan.bar.com foo10.beiing.bar.com foo10.wuhan.bar.com foo11.beiing.bar.com foo11.wuhan.bar.com foo12.beiing.bar.com foo12.wuhan.bar.com]
 ```
 
 ## License
